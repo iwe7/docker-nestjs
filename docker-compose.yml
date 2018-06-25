@@ -1,0 +1,45 @@
+version: "2"
+services:
+  node:
+    image: "node:8"
+    container_name: nest-node
+    working_dir: /home/node/app
+    restart: always
+    volumes:
+      - ./:/home/node/app
+    links:
+      - "db:mysql"
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    command: "npm start"
+    depends_on:
+      - db
+      - phpmyadmin
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: yang1989.
+      MYSQL_DATABASE: 'meepo'
+  db:
+    image: mariadb:latest
+    container_name: nest-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yang1989.
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: nest-myadmin
+    links:
+      - "db:mysql"
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: yang1989.
+      MYSQL_DATABASE: 'meepo'
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - "/sessions"
